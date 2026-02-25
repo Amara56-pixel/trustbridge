@@ -1,1 +1,146 @@
+# TrustBridge Security Architecture Summary
 
+## 1. Purpose
+
+This document defines the overall security design for the TrustBridge platform.  
+The objective is to protect digital identities, transaction data, and trust verification processes against unauthorized access, data breaches, and fraud.
+
+## 2. System Overview
+
+TrustBridge is a digital trust verification platform that allows SMEs to:
+- Create verified digital identities
+- Upload transaction proof
+- Generate trust scores
+- Confirm transactions securely
+
+System Components:
+- Frontend Application (User Interface)
+- Backend API Server (Node.js / Express)
+- Supabase Authentication & Database
+- Supabase Storage
+- Confirmation Token System (JWT)
+
+## 3. High-Level Architecture
+User → Frontend → Backend API → Supabase Services
+
+Security is enforced at every layer of communication.
+
+## 4. Security Principles
+
+The TrustBridge system follows:
+- Least Privilege Access
+- Secure by Design
+- Defense in Depth
+- Zero Trust Validation
+- Data Minimization
+
+## 5. Security Layers
+### 5.1 Client Layer (Frontend)
+Risks:
+- Fake identity submissions
+- Malicious input
+
+Controls:
+- Input validation
+- HTTPS communication
+- No sensitive keys stored in frontend
+
+### 5.2 API Layer (Backend)
+Primary security enforcement layer.
+
+Controls:
+- Authentication middleware
+- JWT token verification
+- Role-based access checks
+- Protected endpoints
+
+Protected Routes:
+- /report-data
+- /upload-proof
+- /generate-confirmation
+
+### 5.3 Authentication Layer
+Implemented using Supabase Auth.
+Features:
+- Secure login sessions
+- Access token validation
+- User identity verification
+
+All sensitive routes require authentication.
+
+### 5.4 Confirmation Token Security
+Transaction confirmations use secure JWT tokens.
+Security Measures:
+- Tokens generated server-side only
+- Random nonce included
+- Token expiration enforced
+- SHA256 hash stored instead of raw token
+- One-time token usage
+
+Purpose:
+Prevents replay attacks and link forgery.
+
+### 5.5 Database Security
+Database hosted on Supabase.
+
+Controls:
+- Row Level Security (RLS)
+- Queries filtered by authenticated user ID
+- No public database access
+
+Sensitive Data Protected:
+- User identity data
+- Transaction records
+- Trust score calculations
+
+### 5.6 File Storage Security
+
+Users upload transaction proof files.
+Controls:
+- Authenticated uploads only
+- Secure storage bucket
+- File metadata validation
+- Restricted file access
+
+## 6. Encryption Strategy
+### Data in Transit
+- HTTPS (TLS encryption)
+
+### Data at Rest
+- Supabase managed encryption
+
+### Token Protection
+- JWT signing using secret key
+- SHA256 hashing for stored tokens
+
+## 7. Threat Mitigation
+Threats Addressed:
+- Unauthorized API access
+- Token replay attacks
+- Identity fraud
+- Data exposure
+- Malicious file uploads
+
+## 8. Security Responsibilities
+
+Cybersecurity Analyst Responsibilities:
+- Review Supabase security configuration
+- Design secure confirmation token system
+- Define encryption standards
+- Establish MVP security protocol
+
+
+## 9. MVP Security Posture
+TrustBridge MVP applies baseline startup security including:
+- Authentication enforcement
+- Secure token confirmation
+- Encrypted communication
+- Controlled database access
+
+Future Enhancements:
+- Rate limiting
+- Audit logging
+- Automated threat monitoring
+
+## 10. Conclusion
+The TrustBridge Security Architecture establishes a secure foundation for trusted digital identity verification and transaction confirmation while supporting scalable future security improvements.
